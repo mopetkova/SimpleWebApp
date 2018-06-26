@@ -1,0 +1,13 @@
+.container{
+    background-color: aliceblue;
+    margin: auto;
+    border: black;
+}
+.box{
+    background-color: aquamarine;
+    margin: auto;
+}
+body{
+    background-color: cadetblue;
+    margin: auto;
+}
