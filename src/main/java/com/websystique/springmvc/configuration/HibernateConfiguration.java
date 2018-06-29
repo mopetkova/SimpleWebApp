@@ -9,9 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -19,8 +22,8 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan({ "com.websystique.springmvc.configuration" })
-@PropertySource(value = { "classpath:application.properties" })
+@ComponentScan({"com.websystique.springmvc.configuration"})
+@PropertySource(value = {"classpath:application.properties"})
 public class HibernateConfiguration {
 
     @Autowired
@@ -34,10 +37,11 @@ public class HibernateConfiguration {
                 This is the usual way to set up a shared Hibernate SessionFactory in a Spring application context;
                 the SessionFactory can then be passed to Hibernate-based data access objects via dependency injection.*/
         sessionFactory.setDataSource(dataSource());
-                //Set the DataSource to be used by the SessionFactory.
-        sessionFactory.setPackagesToScan(new String[] { "com.websystique.springmvc.model" });
+        //Set the DataSource to be used by the SessionFactory.
+        sessionFactory.setPackagesToScan(new String[]{"com.websystique.springmvc.model"});
                 /*Specify packages to search for autodetection of your entity classes in the classpath.
                 This is analogous to Spring's component-scan feature */
+
         sessionFactory.setHibernateProperties(hibernateProperties());
                 /*Set Hibernate properties, such as "hibernate.dialect".
                 Note: Do not specify a transaction provider here when using Spring-driven transactions.
@@ -46,10 +50,15 @@ public class HibernateConfiguration {
     }
 
     @Bean
+    public JpaVendorAdapter jpaVendorAdapter() {
+        return new HibernateJpaVendorAdapter();
+    }
+
+    @Bean
     public DataSource dataSource() {
         String u = new Utils("HibernateConf", "dataSource").toString();
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-                /*returning a new Connection from every getConnection call*/
+        /*returning a new Connection from every getConnection call*/
         dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
         dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
         dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
@@ -75,10 +84,10 @@ public class HibernateConfiguration {
         return txManager;
     }
 
-//    @Bean
-//    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
-//        return new PersistenceExceptionTranslationPostProcessor();
-//    }
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
 
 
 }
