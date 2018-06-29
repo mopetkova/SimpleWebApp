@@ -2,7 +2,8 @@ package com.websystique.springmvc.configuration;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer
+{
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
